@@ -2,8 +2,12 @@
 
 namespace Sudoku {
   Board::Board(sf::RenderWindow &window) : _window(window) {
+    // find a way to get dynamic string
+    if (!_font.loadFromFile("../assets/Trebuchet.ttf")) {
+      // exit bc can not load font
+    }
+
     createBoard();
-    
   }
 
   Board::~Board() {}
@@ -18,8 +22,9 @@ namespace Sudoku {
 
   void Board::draw() {
     // _window.draw(rectangle);
-    for (const auto shape : _shapes) {
-      _window.draw(*shape);
+    for (const auto tile : _tiles) {
+      _window.draw(*(tile->shape));
+      _window.draw(*(tile->text));
     }
   }
 
@@ -37,12 +42,21 @@ namespace Sudoku {
 				 const int x, const int y) {
     for (int i = 0; i < 3; i += 1) {
       for (int j = 0; j < 3; j += 1) {
-	auto shape = new sf::RectangleShape(sf::Vector2f(tileSize.x - 1,
+	Sudoku::Tile *tile = new Tile;
+	sf::Vector2f tilePosition(x * (tileSize.x + 1) * 3 + i * tileSize.x,
+				  y * (tileSize.y + 1) * 3 + j * tileSize.y);
+	tile->shape = new sf::RectangleShape(sf::Vector2f(tileSize.x - 1,
 							 tileSize.y - 1));
-	shape->setPosition
-	  (sf::Vector2f(x * (tileSize.x + 1) * 3 + i * tileSize.x,
-			y * (tileSize.y + 1) * 3 + j * tileSize.y));
-	_shapes.push_back(shape);
+	tile->shape->setPosition(tilePosition);
+
+	tile->text = new sf::Text();
+	tile->text->setFont(_font);
+	tile->text->setString(" " + std::to_string(1 + i + j * 3)); // see how to make dynamic
+	tile->text->setCharacterSize(tileSize.x / 1.5f);
+	tile->text->setFillColor(sf::Color::Black); // see how to make dynamic
+	tile->text->setPosition(tilePosition);
+
+	_tiles.push_back(tile);
       }
     }
   }

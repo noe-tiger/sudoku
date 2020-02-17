@@ -6,6 +6,13 @@
 #include <SFML/Graphics.hpp>
 
 namespace Sudoku {
+  struct Tile {
+    sf::Shape *shape;
+    sf::Text *text;
+
+    int value;
+  };
+
   class Board {
   public:
     Board(sf::RenderWindow &window);
@@ -20,7 +27,8 @@ namespace Sudoku {
 
 
     sf::RenderWindow &_window;
+    sf::Font _font;
 
-    std::vector<sf::Shape *> _shapes;
+    std::vector<Sudoku::Tile *> _tiles;
   };
 }
