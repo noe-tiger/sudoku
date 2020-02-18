@@ -5,13 +5,9 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace Sudoku {
-  struct Tile {
-    sf::Shape *shape;
-    sf::Text *text;
+#include "tile.hpp"
 
-    int value;
-  };
+namespace Sudoku {
 
   class Board {
   public:
@@ -30,5 +26,8 @@ namespace Sudoku {
     sf::Font _font;
 
     std::vector<Sudoku::Tile *> _tiles;
+
+    std::vector<std::vector<Sudoku::Tile *>> _group;
+    std::vector<std::vector<Sudoku::Tile *>> _board;
   };
 }
