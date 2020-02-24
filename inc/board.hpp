@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "tile.hpp"
+#include "generator.hpp"
 
 namespace Sudoku {
 
@@ -29,5 +30,7 @@ namespace Sudoku {
 
     std::vector<std::vector<Sudoku::Tile *>> _group;
     std::vector<std::vector<Sudoku::Tile *>> _board;
+
+    std::vector<std::vector<int>> _raw;
   };
 }

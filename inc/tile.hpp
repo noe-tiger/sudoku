@@ -10,7 +10,8 @@ namespace Sudoku {
   public:
     Tile(sf::RenderWindow &window, const sf::Font &font,
 	 const sf::Vector2f &tilePosition,
-	 const sf::Vector2i &tileSize, int value);
+	 const sf::Vector2i &tileSize,
+	 const std::vector<Sudoku::Tile *> &group);
     ~Tile();
 
     void draw();
@@ -24,5 +25,6 @@ namespace Sudoku {
 
     int _value;
     std::vector<int> _hint;
+    std::vector<Sudoku::Tile *> _group;
   };
 }

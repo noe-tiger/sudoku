@@ -17,6 +17,7 @@ file(
   src/game.cpp
   src/board.cpp
   src/tile.cpp
+  src/generator.cpp
 )
 
 add_executable(sudoku ${sources_sudoku})

@@ -9,8 +9,10 @@ namespace Sudoku {
       // exit bc can not load font
     }
 
-    createBoard();
+    Sudoku::Generator generator;
+    _raw = generator.getBoard();
 
+    createBoard();
 
     // PRINT DE TEST POUR LA BOARD GENERATION
     // for (const auto tile : _tiles) {
@@ -76,7 +78,9 @@ namespace Sudoku {
       for (int j = 0; j < 3; j += 1) {
 	sf::Vector2f tilePosition(x * (tileSize.x + 1) * 3 + i * tileSize.x,
 				  y * (tileSize.y + 1) * 3 + j * tileSize.y);
-	Sudoku::Tile *tile = new Tile(_window, _font, tilePosition, tileSize, x*3+y + 1 + i + j * 3);
+	Sudoku::Tile *tile = new Tile(_window, _font, tilePosition,
+				      tileSize, _group[_group.size() - 1]);
+	tile->setValue(_raw[x * 3 + i][y * 3 + j]);
 	_tiles.push_back(tile);
 	_group[_group.size() - 1].push_back(tile);
 	_board[x * 3 + i].push_back(tile);
