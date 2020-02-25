@@ -48,11 +48,13 @@ namespace Sudoku {
     _playerShape->setPosition(tilePosition);
 
     int val = _board[_player.x][_player.y]->getValue();
+    std::cout << val << std::endl;
     for (const auto tile : _tiles) {
-      if (tile->getValue() == val)
-	tile->highlight(true);
-      else
-	tile->highlight(false);
+      tile->highlight(val);
+      // if (tile->getValue() == val)
+      // 	tile->highlight(true);
+      // else
+      // 	tile->highlight(false);
     }
     for (int i = 0; i < _boardSize; i += 1) {
       _board[_player.x][i]->highlight();

@@ -97,9 +97,9 @@ namespace Sudoku {
     return _hint[value - 1];
   }
 
-  void Tile::highlight(bool highlight) {
+  void Tile::highlight(int value) {
     // changer le highlight en fonction d un chiffre pour highlight les hints
-    if (highlight)
+    if ((_guessedValue == value || _value == value) && value != 0)
       _text->setFillColor(sf::Color::Red); // highlight
     else {
       if (_guessed)
@@ -107,6 +107,10 @@ namespace Sudoku {
       else
 	_text->setFillColor(sf::Color::Black); // fixed tile
     }
+    for (const auto hint : _hintText)
+      hint->setFillColor(sf::Color::Black);
+    if (value > 0 && value <= 9)
+      _hintText[value - 1]->setFillColor(sf::Color::Red);
     _shape->setFillColor(sf::Color(255, 255, 255, 255));
   }
 

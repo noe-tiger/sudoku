@@ -24,7 +24,7 @@ namespace Sudoku {
     void setHint(int value);
     bool getHint(int value);
 
-    void highlight(bool highlight);
+    void highlight(int value);
     void highlight();
   private:
     sf::RenderWindow &_window;
