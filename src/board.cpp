@@ -17,7 +17,7 @@ namespace Sudoku {
 
     // set the emptying differently to make only one solution
     std::random_shuffle(_tiles.begin(), _tiles.end());
-    for (int i = 0; i < 81 - 30; i += 1) // set the difficulty (30 = medium)
+    for (int i = 0; i < 81 - 35; i += 1) // set the difficulty (30 = medium)
     	_tiles[i]->setGuess(true);
 
     _player = sf::Vector2i(4, 4); // set dynamically
@@ -54,12 +54,22 @@ namespace Sudoku {
       else
 	tile->highlight(false);
     }
+    for (int i = 0; i < _boardSize; i += 1) {
+      _board[_player.x][i]->highlight();
+      _board[i][_player.y]->highlight();
+    }
+    for (int i = 0; i < _group[_player.x / 3 * 3 + _player.y / 3].size(); i += 1) {
+      _group[_player.x / 3 * 3 + _player.y / 3][i]->highlight();
+    }
   }
 
   inline void Board::getNumber(const sf::Event &event) {
     if (event.type == sf::Event::TextEntered) {
       if (event.text.unicode >= '0' && event.text.unicode <= '9') {
-	_board[_player.x][_player.y]->setGuessedValue(static_cast<int>(event.text.unicode - '0'));
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+	  _board[_player.x][_player.y]->setHint(static_cast<int>(event.text.unicode - '0'));
+	else
+	  _board[_player.x][_player.y]->setGuessedValue(static_cast<int>(event.text.unicode - '0'));
       } else if (event.text.unicode == 8) {
 	_board[_player.x][_player.y]->setGuessedValue(0);
       }

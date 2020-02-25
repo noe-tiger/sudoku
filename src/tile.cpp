@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "tile.hpp"
 
 namespace Sudoku {
@@ -22,6 +24,18 @@ namespace Sudoku {
 
     _guess = false;
     _guessed = false;
+
+    for (int i = 0; i < 9; i += 1) {// set dynamic size
+      _hint.push_back(false);
+      auto text = new sf::Text();
+      sf::Vector2f hintPos = sf::Vector2f(tileSize.x / 3 * (i % 3) - 3, tileSize.y / 3 * (i / 3) - 3);
+      text->setFont(font);
+      text->setCharacterSize(tileSize.x / (1.5f * 2));
+      text->setFillColor(sf::Color::Black);
+      text->setString(" " + std::to_string(i + 1));
+      text->setPosition(tilePosition + hintPos);
+      _hintText.push_back(text);
+    }
   }
 
   Tile::~Tile() {
@@ -34,7 +48,9 @@ namespace Sudoku {
     if (!_guess || _guessed)
       _window.draw(*_text);
     else
-      return ; // replace with drawing the guessed number / the hints
+      for (int i = 0; i < _hintText.size(); i += 1)
+	if (_hint[i])
+	  _window.draw(*_hintText[i]);
   }
 
   int Tile::getValue() {
@@ -69,7 +85,20 @@ namespace Sudoku {
     _text->setString(" " + std::to_string(value)); // see how to make dynamic
   }
 
+  void Tile::setHint(int value) {
+    if (value <= 0 || value > 9)
+      return ;
+    _hint[value - 1] = !_hint[value - 1];
+  }
+
+  bool Tile::getHint(int value) {
+    if (value <= 0 || value >= 9)
+      return false;
+    return _hint[value - 1];
+  }
+
   void Tile::highlight(bool highlight) {
+    // changer le highlight en fonction d un chiffre pour highlight les hints
     if (highlight)
       _text->setFillColor(sf::Color::Red); // highlight
     else {
@@ -78,5 +107,10 @@ namespace Sudoku {
       else
 	_text->setFillColor(sf::Color::Black); // fixed tile
     }
+    _shape->setFillColor(sf::Color(255, 255, 255, 255));
+  }
+
+  void Tile::highlight() {
+    _shape->setFillColor(sf::Color(255, 255, 128, 255));
   }
 }

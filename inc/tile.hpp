@@ -21,15 +21,21 @@ namespace Sudoku {
     void setGuess(bool guess);
 
     void setGuessedValue(int value);
+    void setHint(int value);
+    bool getHint(int value);
 
     void highlight(bool highlight);
+    void highlight();
   private:
     sf::RenderWindow &_window;
     sf::Shape *_shape;
     sf::Text *_text;
 
     int _value, _guessedValue;
-    std::vector<int> _hint;
+
+    std::vector<bool> _hint;
+    std::vector<sf::Text *> _hintText;
+
     std::vector<Sudoku::Tile *> _group;
     bool _guess, _guessed;
   };
