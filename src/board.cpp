@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 #include "board.hpp"
 
@@ -14,30 +15,17 @@ namespace Sudoku {
 
     createBoard();
 
-    // PRINT DE TEST POUR LA BOARD GENERATION
-    // for (const auto tile : _tiles) {
-    //   std::cout << tile->getValue() << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
+    // set the emptying differently to make only one solution
+    std::random_shuffle(_tiles.begin(), _tiles.end());
+    for (int i = 0; i < 81 - 30; i += 1) // set the difficulty (30 = medium)
+    	_tiles[i]->setGuess(true);
 
-    // for (const auto group : _group) {
-    //   for (const auto tile : group) {
-    // 	std::cout << tile->getValue() << " ";
-    //   }
-    //   std::cout << std::endl;
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-
-    // for (const auto line : _board) {
-    //   for (const auto tile : line) {
-    // 	std::cout << tile->getValue() << " ";
-    //   }
-    //   std::cout << std::endl;
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
+    _player = sf::Vector2i(4, 4); // set dynamically
+    sf::Vector2i tileSize = sf::Vector2i(_window.getSize().x / _boardSize,
+					 _window.getSize().y / _boardSize); // set dynamically
+    _playerShape = new sf::RectangleShape(sf::Vector2f(tileSize.x - 1,
+						       tileSize.y - 1));
+    _playerShape->setFillColor(sf::Color(0, 0, 255, 128));
   }
 
   Board::~Board() {
@@ -45,27 +33,66 @@ namespace Sudoku {
   }
 
   void Board::update(const sf::Event &event) {
-
+    
   }
 
   void Board::update() {
+    static bool left = false, right = false, up = false, down = false;
+    // dynamically set keys
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !left) {
+      _player.x -= 1;
+      left = !left;
+    } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && left)
+      left = !left;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !right) {
+      _player.x += 1;
+      right = !right;
+    } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && right)
+      right = !right;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !up) {
+      _player.y -= 1;
+      up = !up;
+    } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && up)
+      up = !up;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !down) {
+      _player.y += 1;
+      down = !down;
+    } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && down)
+      down = !down;
 
+
+    // faire ca plus propre
+    sf::Vector2i tileSize = sf::Vector2i(_window.getSize().x / _boardSize,
+					 _window.getSize().y / _boardSize); // set dynamically
+    sf::Vector2f tilePosition
+      ((3 * int(_player.x / sqrt(_boardSize))) + _player.x * tileSize.x,
+       (3 * int(_player.y / sqrt(_boardSize))) + _player.y * tileSize.y); // faire plus mieux
+    _playerShape->setPosition(tilePosition);
+
+    int val = _board[_player.x][_player.y]->getValue();
+    for (const auto tile : _tiles) {
+      if (tile->getValue() == val)
+	tile->highlight(true);
+      else
+	tile->highlight(false);
+    }
   }
 
   void Board::draw() {
     for (const auto tile : _tiles) {
       tile->draw();
     }
+    _window.draw(*_playerShape);
   }
 
   inline void Board::createBoard() {
     sf::Vector2u windowSize = _window.getSize();
-    sf::Vector2i tileSize = sf::Vector2i(windowSize.x / 9, windowSize.y / 9);
-    for (int i = 0; i < 9; i += 1) {
+    sf::Vector2i tileSize = sf::Vector2i(windowSize.x / _boardSize, windowSize.y / _boardSize);
+    for (int i = 0; i < _boardSize; i += 1) {
       _board.push_back(std::vector<Sudoku::Tile *>());
     }
-    for (int x = 0; x < 3; x += 1) {
-      for (int y = 0; y < 3; y += 1) {
+    for (int x = 0; x < sqrt(_boardSize); x += 1) {
+      for (int y = 0; y < sqrt(_boardSize); y += 1) {
 	_group.push_back(std::vector<Sudoku::Tile *>());
 	createGroup(tileSize, x, y);
       }
@@ -74,16 +101,16 @@ namespace Sudoku {
 
   inline void Board::createGroup(const sf::Vector2i &tileSize,
 				 const int x, const int y) {
-    for (int i = 0; i < 3; i += 1) {
-      for (int j = 0; j < 3; j += 1) {
-	sf::Vector2f tilePosition(x * (tileSize.x + 1) * 3 + i * tileSize.x,
-				  y * (tileSize.y + 1) * 3 + j * tileSize.y);
+    for (int i = 0; i < sqrt(_boardSize); i += 1) {
+      for (int j = 0; j < sqrt(_boardSize); j += 1) {
+	sf::Vector2f tilePosition(x * (tileSize.x + 1) * sqrt(_boardSize) + i * tileSize.x,
+				  y * (tileSize.y + 1) * sqrt(_boardSize) + j * tileSize.y);
 	Sudoku::Tile *tile = new Tile(_window, _font, tilePosition,
 				      tileSize, _group[_group.size() - 1]);
-	tile->setValue(_raw[x * 3 + i][y * 3 + j]);
+	tile->setValue(_raw[x * sqrt(_boardSize) + i][y * sqrt(_boardSize) + j]);
 	_tiles.push_back(tile);
 	_group[_group.size() - 1].push_back(tile);
-	_board[x * 3 + i].push_back(tile);
+	_board[x * sqrt(_boardSize) + i].push_back(tile);
       }
     }
   }

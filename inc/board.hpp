@@ -22,9 +22,14 @@ namespace Sudoku {
     void createBoard();
     void createGroup(const sf::Vector2i &tileSize, const int x, const int y);
 
+    int _boardSize = 9; // set dynamic
 
     sf::RenderWindow &_window;
-    sf::Font _font;
+    sf::Font _font; // set dynamic size
+
+    sf::Shape *_playerShape;
+
+    sf::Vector2i _player;
 
     std::vector<Sudoku::Tile *> _tiles;
 

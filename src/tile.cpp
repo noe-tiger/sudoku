@@ -11,15 +11,16 @@ namespace Sudoku {
 						tileSize.y - 1));
     _shape->setPosition(tilePosition);
 
+    _value = 0;
+
     _text = new sf::Text();
     _text->setFont(font);
-    _text->setString(" " + std::to_string(0)); // see how to make dynamic
+    _text->setString(" " + std::to_string(_value)); // see how to make dynamic
     _text->setCharacterSize(tileSize.x / 1.5f);
     _text->setFillColor(sf::Color::Black); // see how to make dynamic
     _text->setPosition(tilePosition);
 
-    _value = 0;
-
+    _guess = false;
   }
 
   Tile::~Tile() {
@@ -29,17 +30,35 @@ namespace Sudoku {
 
   void Tile::draw() {
     _window.draw(*_shape);
-    _window.draw(*_text);
+    if (!_guess)
+      _window.draw(*_text);
+    else
+      return ; // replace with drawing the guessed number / the hints
   }
 
   int Tile::getValue() {
-    return _value;
+    if (!_guess)
+      return _value;
+    return 0;
   }
 
   void Tile::setValue(int value) {
-    if (value < 0 || value > 9)
+    if (_value != 0 && !_guess)
+      return ;
+    if (value < 0 || value > 9) // changer si grille plus grande
       return ;
     _text->setString(" " + std::to_string(value));
     _value = value;
+  }
+
+  void Tile::setGuess(bool guess) {
+    _guess = guess;
+  }
+
+  void Tile::highlight(bool highlight) {
+    if (highlight)
+      _text->setFillColor(sf::Color::Red);
+    else
+      _text->setFillColor(sf::Color::Black);
   }
 }

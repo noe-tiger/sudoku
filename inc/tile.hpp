@@ -18,6 +18,9 @@ namespace Sudoku {
 
     int getValue();
     void setValue(int value);
+    void setGuess(bool guess);
+
+    void highlight(bool highlight);
   private:
     sf::RenderWindow &_window;
     sf::Shape *_shape;
@@ -26,5 +29,6 @@ namespace Sudoku {
     int _value;
     std::vector<int> _hint;
     std::vector<Sudoku::Tile *> _group;
+    bool _guess;
   };
 }
