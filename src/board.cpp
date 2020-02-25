@@ -48,13 +48,8 @@ namespace Sudoku {
     _playerShape->setPosition(tilePosition);
 
     int val = _board[_player.x][_player.y]->getValue();
-    std::cout << val << std::endl;
     for (const auto tile : _tiles) {
       tile->highlight(val);
-      // if (tile->getValue() == val)
-      // 	tile->highlight(true);
-      // else
-      // 	tile->highlight(false);
     }
     for (int i = 0; i < _boardSize; i += 1) {
       _board[_player.x][i]->highlight();
@@ -71,10 +66,26 @@ namespace Sudoku {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
 	  _board[_player.x][_player.y]->setHint(static_cast<int>(event.text.unicode - '0'));
 	else
-	  _board[_player.x][_player.y]->setGuessedValue(static_cast<int>(event.text.unicode - '0'));
+	  if (_board[_player.x][_player.y]->
+	      setGuessedValue(static_cast<int>(event.text.unicode - '0')) == 0) {
+	    removeHints(static_cast<int>(event.text.unicode - '0'));
+	  }
       } else if (event.text.unicode == 8) {
 	_board[_player.x][_player.y]->setGuessedValue(0);
       }
+    }
+  }
+
+  inline void Board::removeHints(const int value) {
+    for (int i = 0; i < _boardSize; i += 1) {
+      if (_board[_player.x][i]->getHint(value))
+	_board[_player.x][i]->setHint(value);
+      if (_board[i][_player.y]->getHint(value))
+	_board[i][_player.y]->setHint(value);
+    }
+    for (int i = 0; i < _group[_player.x / 3 * 3 + _player.y / 3].size(); i += 1) {
+      if (_group[_player.x / 3 * 3 + _player.y / 3][i]->getHint(value))
+	_group[_player.x / 3 * 3 + _player.y / 3][i]->setHint(value);
     }
   }
 

@@ -20,7 +20,7 @@ namespace Sudoku {
     void setValue(int value);
     void setGuess(bool guess);
 
-    void setGuessedValue(int value);
+    int setGuessedValue(int value);
     void setHint(int value);
     bool getHint(int value);
 

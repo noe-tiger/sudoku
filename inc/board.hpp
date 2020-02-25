@@ -24,6 +24,7 @@ namespace Sudoku {
 
     void getMoves();
     void getNumber(const sf::Event &event);
+    void removeHints(const int value);
 
     int _boardSize = 9; // set dynamic
 

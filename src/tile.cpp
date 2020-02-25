@@ -74,15 +74,16 @@ namespace Sudoku {
     _guess = guess;
   }
 
-  void Tile::setGuessedValue(int value) {
+  int Tile::setGuessedValue(int value) {
     if (!_guess)
-      return ;
+      return -1;
     _guessedValue = value;
     if (value == 0)
       _guessed = false;
     else
       _guessed = true;
     _text->setString(" " + std::to_string(value)); // see how to make dynamic
+    return 0;
   }
 
   void Tile::setHint(int value) {
