@@ -21,6 +21,7 @@ namespace Sudoku {
     _text->setPosition(tilePosition);
 
     _guess = false;
+    _guessed = false;
   }
 
   Tile::~Tile() {
@@ -30,7 +31,7 @@ namespace Sudoku {
 
   void Tile::draw() {
     _window.draw(*_shape);
-    if (!_guess)
+    if (!_guess || _guessed)
       _window.draw(*_text);
     else
       return ; // replace with drawing the guessed number / the hints
@@ -39,6 +40,8 @@ namespace Sudoku {
   int Tile::getValue() {
     if (!_guess)
       return _value;
+    if (_guessed)
+      return _guessedValue;
     return 0;
   }
 
@@ -55,10 +58,25 @@ namespace Sudoku {
     _guess = guess;
   }
 
+  void Tile::setGuessedValue(int value) {
+    if (!_guess)
+      return ;
+    _guessedValue = value;
+    if (value == 0)
+      _guessed = false;
+    else
+      _guessed = true;
+    _text->setString(" " + std::to_string(value)); // see how to make dynamic
+  }
+
   void Tile::highlight(bool highlight) {
     if (highlight)
-      _text->setFillColor(sf::Color::Red);
-    else
-      _text->setFillColor(sf::Color::Black);
+      _text->setFillColor(sf::Color::Red); // highlight
+    else {
+      if (_guessed)
+	_text->setFillColor(sf::Color::Blue); // modified by the player
+      else
+	_text->setFillColor(sf::Color::Black); // fixed tile
+    }
   }
 }

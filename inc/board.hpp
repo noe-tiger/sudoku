@@ -22,6 +22,9 @@ namespace Sudoku {
     void createBoard();
     void createGroup(const sf::Vector2i &tileSize, const int x, const int y);
 
+    void getMoves();
+    void getNumber(const sf::Event &event);
+
     int _boardSize = 9; // set dynamic
 
     sf::RenderWindow &_window;

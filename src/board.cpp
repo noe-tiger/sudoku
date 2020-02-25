@@ -33,10 +33,40 @@ namespace Sudoku {
   }
 
   void Board::update(const sf::Event &event) {
-    
+    getNumber(event);    
   }
 
   void Board::update() {
+    getMoves();
+    
+    // faire ca plus propre
+    sf::Vector2i tileSize = sf::Vector2i(_window.getSize().x / _boardSize,
+					 _window.getSize().y / _boardSize); // set dynamically
+    sf::Vector2f tilePosition
+      ((3 * static_cast<int>(_player.x / sqrt(_boardSize))) + _player.x * tileSize.x,
+       (3 * static_cast<int>(_player.y / sqrt(_boardSize))) + _player.y * tileSize.y); // faire plus mieux
+    _playerShape->setPosition(tilePosition);
+
+    int val = _board[_player.x][_player.y]->getValue();
+    for (const auto tile : _tiles) {
+      if (tile->getValue() == val)
+	tile->highlight(true);
+      else
+	tile->highlight(false);
+    }
+  }
+
+  inline void Board::getNumber(const sf::Event &event) {
+    if (event.type == sf::Event::TextEntered) {
+      if (event.text.unicode >= '0' && event.text.unicode <= '9') {
+	_board[_player.x][_player.y]->setGuessedValue(static_cast<int>(event.text.unicode - '0'));
+      } else if (event.text.unicode == 8) {
+	_board[_player.x][_player.y]->setGuessedValue(0);
+      }
+    }
+  }
+
+  inline void Board::getMoves() {
     static bool left = false, right = false, up = false, down = false;
     // dynamically set keys
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !left) {
@@ -63,25 +93,8 @@ namespace Sudoku {
       down = !down;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && down)
       down = !down;
-
-
-    // faire ca plus propre
-    sf::Vector2i tileSize = sf::Vector2i(_window.getSize().x / _boardSize,
-					 _window.getSize().y / _boardSize); // set dynamically
-    sf::Vector2f tilePosition
-      ((3 * int(_player.x / sqrt(_boardSize))) + _player.x * tileSize.x,
-       (3 * int(_player.y / sqrt(_boardSize))) + _player.y * tileSize.y); // faire plus mieux
-    _playerShape->setPosition(tilePosition);
-
-    int val = _board[_player.x][_player.y]->getValue();
-    for (const auto tile : _tiles) {
-      if (tile->getValue() == val)
-	tile->highlight(true);
-      else
-	tile->highlight(false);
-    }
   }
-
+  
   void Board::draw() {
     for (const auto tile : _tiles) {
       tile->draw();
