@@ -40,22 +40,26 @@ namespace Sudoku {
     static bool left = false, right = false, up = false, down = false;
     // dynamically set keys
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !left) {
-      _player.x -= 1;
+      if (_player.x > 0)
+	_player.x -= 1;
       left = !left;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && left)
       left = !left;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !right) {
-      _player.x += 1;
+      if (_player.x < _boardSize - 1)
+	_player.x += 1;
       right = !right;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && right)
       right = !right;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !up) {
-      _player.y -= 1;
+      if (_player.y > 0)
+	_player.y -= 1;
       up = !up;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && up)
       up = !up;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !down) {
-      _player.y += 1;
+      if (_player.y < _boardSize - 1)
+	_player.y += 1;
       down = !down;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && down)
       down = !down;
