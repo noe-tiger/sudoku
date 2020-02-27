@@ -37,7 +37,10 @@ namespace Sudoku {
   }
 
   void Board::update() {
+    if (!_window.hasFocus())
+      return ;
     getMoves();
+    getCursor();
     
     // faire ca plus propre
     sf::Vector2i tileSize = sf::Vector2i(_window.getSize().x / _boardSize,
@@ -57,6 +60,18 @@ namespace Sudoku {
     }
     for (int i = 0; i < _group[_player.x / 3 * 3 + _player.y / 3].size(); i += 1) {
       _group[_player.x / 3 * 3 + _player.y / 3][i]->highlight();
+    }
+  }
+
+  inline void Board::getCursor() {
+    sf::Vector2i pos = sf::Mouse::getPosition(_window);
+    sf::Vector2u size = _window.getSize();
+
+    if (pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y) {
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	_player.x = static_cast<int>(static_cast<float>(pos.x) / static_cast<float>(size.x) * 9);
+	_player.y = static_cast<int>(static_cast<float>(pos.y) / static_cast<float>(size.y) * 9);
+      }
     }
   }
 
@@ -95,24 +110,32 @@ namespace Sudoku {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !left) {
       if (_player.x > 0)
 	_player.x -= 1;
+      else if (_player.x == 0)
+	_player.x = _boardSize - 1;
       left = !left;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && left)
       left = !left;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !right) {
       if (_player.x < _boardSize - 1)
 	_player.x += 1;
+      else if (_player.x >= _boardSize - 1)
+	_player.x = 0;
       right = !right;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && right)
       right = !right;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !up) {
       if (_player.y > 0)
 	_player.y -= 1;
+      else if (_player.y == 0)
+	_player.y = _boardSize - 1;
       up = !up;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && up)
       up = !up;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !down) {
       if (_player.y < _boardSize - 1)
 	_player.y += 1;
+      else if (_player.y >= _boardSize - 1)
+	_player.y = 0;
       down = !down;
     } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && down)
       down = !down;

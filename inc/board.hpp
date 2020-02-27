@@ -23,6 +23,7 @@ namespace Sudoku {
     void createGroup(const sf::Vector2i &tileSize, const int x, const int y);
 
     void getMoves();
+    void getCursor();
     void getNumber(const sf::Event &event);
     void removeHints(const int value);
 
